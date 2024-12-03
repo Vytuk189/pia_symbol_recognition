@@ -2,7 +2,7 @@
 
 OPRAVIT CHYBY DO PREZENTACE - Neuronová síť nedává správné výsledky - do finální prezentace najít a opravit proč
                             - Vytvořit hlavičkové soubory
-                            - vyrobit pořádnou prezentaci
+                            - vyrobit pořádnou dokumentaci
                             - gui zkontroluje zda je vytvořena síť
 
 POSTUP POUŽITÍ
