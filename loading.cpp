@@ -121,12 +121,6 @@ void load_testing_data(const std::string& images_path, const std::string& labels
     }
 }
 
-struct MNISTDataReady {
-    std::vector<std::pair<std::vector<double>, std::vector<double>>> training_data;
-    std::vector<std::pair<std::vector<double>, uint8_t>> validation_data;
-    std::vector<std::pair<std::vector<double>, uint8_t>> test_data;
-};
-
 MNISTDataReady convert_to_ready_format(const MNISTData& data) {
     MNISTDataReady ready_data;
 
