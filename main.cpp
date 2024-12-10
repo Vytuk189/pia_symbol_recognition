@@ -5,8 +5,9 @@
 #include <cmath>
 #include <random>  
 #include <algorithm>
-#include "loading.cpp"
-#include "training.cpp"
+#include "loading.h"
+#include "training.h"
+#include "base.h"
 #include <fstream>
 #include <cstdint>
 

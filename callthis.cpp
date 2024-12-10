@@ -5,7 +5,8 @@
 #include <cmath>
 #include <random>  
 #include <algorithm>
-#include "training.cpp"
+#include "training.h"
+#include "callthis.h"
 #include <fstream>
 #include <cstdint>
 

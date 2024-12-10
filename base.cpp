@@ -9,6 +9,8 @@
 #include <fstream>
 #include <cstdint>
 
+#include "base.h"
+
 void Print_Array(const std::vector<int>& array) {
         for (int i = 0; i < array.size(); i++) {
             std::cout << array[i] << " ";

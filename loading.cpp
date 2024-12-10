@@ -8,7 +8,12 @@
 
 #include <fstream>
 #include <cstdint>
+#include "loading.h"
 
+/*
+    This file contains all the functions necessary to load data from the MNIST library and store them in a suitable format
+    for future calculations
+*/
 
 // Function to manually swap the bytes of a 32-bit integer
 uint32_t swap_endian32(uint32_t value) {
@@ -38,13 +43,6 @@ uint16_t read_uint16(std::ifstream& file) {
     return swap_endian16(value); // Swap from big-endian to little-endian
 }
 
-// Structure to store MNIST data
-struct MNISTData {
-    std::vector<std::vector<uint8_t>> train_images;
-    std::vector<uint8_t> train_labels;
-    std::vector<std::vector<uint8_t>> test_images;
-    std::vector<uint8_t> test_labels;
-};
 
 
 // Function to load MNIST dataset (images and labels) - Training Data

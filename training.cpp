@@ -7,10 +7,15 @@
 #include <random>  
 #include <algorithm>
 #include <string>
-#include "base.cpp"
+#include "base.h"
+#include "training.h"
 
 #include <fstream>
 #include <cstdint>
+
+/*
+    This file contains all the necessary functions for creating a neural net, training it and then saving/loading it
+*/
 
 
 
@@ -29,16 +34,11 @@ double Dot_product(const std::vector<double>& v1, const std::vector<double>& v2)
 
 
 
-
-
-class Network {
-public:
-
     // Constructor for the neural network
     // Argument - (A, B, C, D): network has A input nodes
     //                          two hidden layers with B and C nodes
     //                          D output nodes
-    Network(const std::vector<int>& layer_sizes) {
+    Network::Network(const std::vector<int>& layer_sizes) {
 
         Num_layers = layer_sizes.size();
         Sizes = layer_sizes; // vector of the no. of elements in each layer
@@ -75,7 +75,7 @@ public:
     }
 
     // Function to print network's biases and weights for debugging
-    void Initial_Print() const {
+    void Network::Initial_Print() const {
         for (int i = 0; i < Num_layers - 1; ++i) {
             std::cout << "Layer " << i + 1 << " Biases:" << std::endl;
             for (int j = 0; j < Biases[i].size(); ++j) {
@@ -93,19 +93,20 @@ public:
         }
     }
 
-    double Sigmoid(double z) {
+    //Sigmoid function
+    double Network::Sigmoid(double z) {
         return 1.0 / (1.0 + std::exp(-z));
     }
 
     // Derivative of the Sigmoid function
-    double Sigmoid_prime(double z) {
+    double Network::Sigmoid_prime(double z) {
         double sig = Sigmoid(z);
         return sig * (1 - sig);
     }
 
 
     // Calculates the output of the network given input, weights and biases
-    std::vector<double> Output(const std::vector<double>& input) {
+    std::vector<double> Network::Output(const std::vector<double>& input) {
 
         std::vector<double> output = input;  // Initialize output vector
         
@@ -126,7 +127,7 @@ public:
     }
 
 
-    std::pair<std::vector<std::vector<double>>, std::vector<std::vector<std::vector<double>>>> backprop(const std::vector<double>& x, const std::vector<double>& y) {
+    std::pair<std::vector<std::vector<double>>, std::vector<std::vector<std::vector<double>>>> Network::backprop(const std::vector<double>& x, const std::vector<double>& y) {
     //void backprop(const std::vector<double>& x, const std::vector<double>& y) {
     // Initialize nabla_b and nabla_w with zero vectors
     std::vector<std::vector<double>> nabla_b(Num_layers - 1);
@@ -162,14 +163,6 @@ public:
         activation = activation_next;  // Update activation for the next layer
     }
     
-    
-    /*
-    std::cout << "Activations layer by layer: " << std::endl;
-    for (int i = 0; i < Num_layers; ++i) {
-        std::cout << "Layer " << i << " ";
-        Print_Array(activations[i]);
-    }
-    */
 
     
     
@@ -179,11 +172,6 @@ public:
         delta[i] *= Sigmoid_prime(zs.back()[i]);
     }
 
-    
-    /*
-    std::cout << "Cost_difference (should be a vector of zeros, if y = initial output): ";
-    Print_Array(delta);
-    */
     
     // Initializes the last layer of nabla_b as the cost difference
     nabla_b[Num_layers - 2] = delta;
@@ -197,7 +185,6 @@ public:
         }
     }
 
-    /**/
     // Loop through the remaining layers
     for (int l = 2; l < Num_layers; ++l) {
 
@@ -242,7 +229,7 @@ public:
     }
 
     
-    void update_mini_batch(const std::vector<std::pair<std::vector<double>, std::vector<double>>>& mini_batch, double eta) {
+    void Network::update_mini_batch(const std::vector<std::pair<std::vector<double>, std::vector<double>>>& mini_batch, double eta) {
 
         
 
@@ -255,7 +242,7 @@ public:
             nabla_w[i].resize(Sizes[i + 1], std::vector<double>(Sizes[i], 0.0));
         }
 
-        // Loop over the mini-batch and apply backpropagation
+        // Loop over the mini-batch and do backpropagation
         for (const auto& [x, y] : mini_batch) {
             auto [delta_nabla_b, delta_nabla_w] = backprop(x, y);
             
@@ -290,9 +277,9 @@ public:
 
     
     // Function to train the network using Stochastic Gradient Descent
-    void SGD(std::vector<std::pair<std::vector<double>, std::vector<double>>>& training_data,
+    void Network::SGD(std::vector<std::pair<std::vector<double>, std::vector<double>>>& training_data,
              int epochs, int mini_batch_size, double eta,
-             std::vector<std::pair<std::vector<double>, uint8_t>>* test_data = nullptr) {
+             std::vector<std::pair<std::vector<double>, uint8_t>>* test_data) {
 
         int n = training_data.size();
         int n_test = test_data[0].size();
@@ -335,13 +322,13 @@ public:
     }
 
     // Function to find the index of the maximum element
-    int findMaxIndex(const std::vector<double>& vec) {
+    int Network::findMaxIndex(const std::vector<double>& vec) {
         auto max_it = std::max_element(vec.begin(), vec.end());
         return max_it - vec.begin();  // Return the index of the maximum element
     }
     
 
-    int evaluate(const std::vector<std::pair<std::vector<double>, uint8_t>>& test_data) {
+    int Network::evaluate(const std::vector<std::pair<std::vector<double>, uint8_t>>& test_data) {
         int correct = 0;
         for (const auto& [x, y] : test_data) {
             std::vector<double> output = Output(x);
@@ -354,7 +341,7 @@ public:
     }
 
     // Cost function derivative (difference between output activations and target)
-    std::vector<double> Cost_derivative(const std::vector<double>& output_activations, const std::vector<double>& y) {
+    std::vector<double> Network::Cost_derivative(const std::vector<double>& output_activations, const std::vector<double>& y) {
         std::vector<double> diff(output_activations.size());
         for (int i = 0; i < output_activations.size(); ++i) {
             diff[i] = output_activations[i] - y[i];
@@ -363,7 +350,8 @@ public:
     }
 
 
-    void SaveNetwork(const std::string& filename) {
+    // Saves the network into a .txt file that can be read by the user
+    void Network::SaveNetwork(const std::string& filename) {
 
         std::ofstream file(filename, std::ios::trunc);  // Open in truncate mode
         if (!file) {
@@ -405,7 +393,8 @@ public:
         std::cout << "Network saved to " << filename << std::endl;
     }
 
-    void SaveNetworkBinary(const std::string& filename) {
+    // Saves the network into a binary file that will be read for future digit recognitions
+    void Network::SaveNetworkBinary(const std::string& filename) {
         std::ofstream file(filename, std::ios::binary);  // Open in binary mode
         if (!file) {
             std::cerr << "Failed to open file for saving the network." << std::endl;
@@ -440,28 +429,12 @@ public:
         std::cout << "Network saved to " << filename << std::endl;
 }
 
-    static Network LoadNetwork(const std::string& filename);
-
-
-
-
-
-
-   
-
-private:
-    int Num_layers;
-    std::vector<int> Sizes;
-    std::vector<std::vector<double>> Biases;  // 2D matrix - each column is biases in one layer
-    std::vector<std::vector<std::vector<double>>> Weights; // 3D matrix - each node in a layer has X weights connecting to the X nodes in the previous layer
-
     // Generate random values between -1 and 1
-    double Random_double() const {
+    double Network::Random_double() const {
         return (std::rand() / (RAND_MAX + 1.0)) * 2 - 1;
     }
 
-};
-
+// Loads the network in binary form to be used for digit evaluation
 Network Network::LoadNetwork(const std::string& filename) {
     std::ifstream file(filename, std::ios::binary);  // Open in binary mode
     if (!file) {
