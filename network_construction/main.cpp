@@ -7,9 +7,23 @@
 #include <algorithm>
 #include "loading.h"
 #include "training.h"
-#include "base.h"
 #include <fstream>
 #include <cstdint>
+
+void Print_Array_int(const std::vector<int>& array) {
+        for (int i = 0; i < array.size(); i++) {
+            std::cout << array[i] << " ";
+        }
+        std::cout << std::endl;
+    };
+
+void Print_Array_double(const std::vector<double>& array) {
+        for (int i = 0; i < array.size(); i++) {
+            std::cout << array[i] << " ";
+        }
+        std::cout << std::endl;
+    };
+
 
 int main() {
     
@@ -45,7 +59,7 @@ int main() {
     
     std::cout << "Number of pixels in image is: " << image.size() << std::endl;
     // result of the first image
-    Print_Array(ready_data.training_data[0].second);
+    Print_Array_double(ready_data.training_data[0].second);
 
 
 
@@ -73,7 +87,7 @@ int main() {
     
 
     std::vector<double> output = net.Output(ready_data.training_data[0].first);
-    Print_Array(output);
+    Print_Array_double(output);
 
     net.SaveNetworkBinary("network.bin");    
     net.SaveNetwork("network.txt");

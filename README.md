@@ -14,5 +14,8 @@ callthis -> vyhodnocovací skript pro specifický příklad zadaný uživatelem 
 main -> použít je jednou pro tvorbu sítě
 
 NÁVOD K POUŽITÍ:
-1) Zkompilovat a spustit soubor main.cpp -> vytvoří neuronovou síť 
+1) Otevřít složku network_construction
+2) Zkompilovat a spustit soubor main.cpp -> vytvoří neuronovou síť 
+3) Vrátit se ze složky network_construction
+4) Zkompilovat soubor callthis.cpp
 2) Spustis soubor gui.py -> vyhodnotí nakreslené číslice dle neuronové sítě

@@ -6,13 +6,14 @@
 #include <random>  
 #include <algorithm>
 #include "training.h"
-#include "callthis.h"
 #include <fstream>
 #include <cstdint>
 
+
+
 int main() {
     // Load the pre-trained network
-    Network network = Network::LoadNetwork("network.bin");
+    Network network = Network::LoadNetwork("network_construction/network.bin");
 
     // Read the input vector from the file
     std::ifstream inputFile("input_vector.txt");
